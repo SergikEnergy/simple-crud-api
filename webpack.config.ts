@@ -1,27 +1,34 @@
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { Configuration } from 'webpack';
-import { dirname, resolve } from 'path';
-
-const __dirname = dirname(import.meta.url);
 
 const isDevMode = process.env.NODE_ENV === 'development';
 
 const config: Configuration = {
-  entry: { bundle: resolve(__dirname, 'src', 'index.ts') },
+  entry: resolve(__dirname, 'src', 'index.ts'),
+  mode: isDevMode ? 'development' : 'production',
   target: 'node',
+  devtool: isDevMode && 'source-map',
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        use: ['ts-loader'],
+        test: /\.ts$/i,
+        loader: 'ts-loader',
+        options: {
+          configFile: resolve(__dirname, 'tsconfig.json'),
+        },
       },
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js', '.json'],
   },
+  plugins: [new CleanWebpackPlugin()],
   watch: isDevMode,
   output: {
-    filename: 'bundle.js',
+    clean: true,
+    filename: 'index.js',
     path: resolve(__dirname, 'dist'),
   },
 };
