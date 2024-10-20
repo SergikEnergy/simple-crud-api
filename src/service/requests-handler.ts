@@ -41,6 +41,7 @@ export const getUserRequestHandler = async (
 
   try {
     const userInfo = await getUserById(id);
+
     if (!userInfo) {
       prepareResponseData(res, 404, {
         status: 404,
@@ -106,8 +107,8 @@ export const deleteUserRequestHandler = async (
     }
 
     res.writeHead(204).end();
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     prepareResponseData(res, 500, {
       status: 500,
       message: 'Oops! Server error.',
@@ -141,8 +142,8 @@ export const updateUserRequestHandler = async (
     }
 
     prepareResponseData(res, 200, userInfo);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     prepareResponseData(res, 500, {
       status: 500,
       message: 'Oops! Server error.',

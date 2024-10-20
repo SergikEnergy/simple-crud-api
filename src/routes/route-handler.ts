@@ -20,7 +20,10 @@ export const routeHandler: RouteHandlerFunction = async (
   res,
   endpoint,
 ) => {
-  const userIdMatch = endpoint.match(/^\/api\/users\/([a-f0-9\-]{36})\/?$/);
+  const userIdMatch = endpoint.match(/^\/api\/users\/([a-f0-9-]+)\/?$/);
+  // check uuid param with regexp - contains only character in english, numbers from 0 to 9 or '-' sign
+  // checking user id format provide further in the app
+
   const userId = userIdMatch ? userIdMatch[1] : null;
 
   switch (req.method) {
@@ -52,10 +55,11 @@ export const routeHandler: RouteHandlerFunction = async (
     }
 
     default: {
-      // when route is not defined
+      // when method is not defined
       return false;
     }
   }
 
+  //when route is not defined
   return false;
 };
