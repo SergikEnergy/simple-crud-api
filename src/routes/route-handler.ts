@@ -20,8 +20,8 @@ export const routeHandler: RouteHandlerFunction = async (
   res,
   endpoint,
 ) => {
-  const userIdMatch = endpoint.match(/^\/api\/users\/([a-f0-9-]+)\/?$/);
-  // check uuid param with regexp - contains only character in english, numbers from 0 to 9 or '-' sign
+  const userIdMatch = endpoint.match(/^\/api\/users\/(.+)$/);
+  // select id - all params after api/users/ phrase
   // checking user id format provide further in the app
 
   const userId = userIdMatch ? userIdMatch[1] : null;
@@ -33,6 +33,7 @@ export const routeHandler: RouteHandlerFunction = async (
         return true;
       }
       if (!userId) break;
+
       await getUserRequestHandler(req, res, userId);
       return true;
     }
@@ -44,12 +45,14 @@ export const routeHandler: RouteHandlerFunction = async (
 
     case HTTPMethods.Delete: {
       if (!userId) break;
+
       await deleteUserRequestHandler(req, res, userId);
       return true;
     }
 
     case HTTPMethods.Put: {
       if (!userId) break;
+
       await updateUserRequestHandler(req, res, userId);
       return true;
     }

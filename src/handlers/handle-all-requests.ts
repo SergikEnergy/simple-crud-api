@@ -2,6 +2,7 @@ import { ServerResponse, IncomingMessage } from 'http';
 import { HTTPMethods } from '../types/methods';
 import { routeHandler } from '../routes/route-handler';
 import { notFoundUrl } from '../utils/not-found-url';
+import { RESPONSE_MESSAGES } from '../constants/response-messages';
 
 type HandleAllRequestFunction = (
   request: IncomingMessage,
@@ -14,6 +15,7 @@ export const handleAllRequest: HandleAllRequestFunction = async (
 ) => {
   try {
     if (request.method && request.method === HTTPMethods.Options) {
+      // imitate OPTION method for complete requests
       const now = new Date().toISOString();
       response.setHeader(
         'Access-Control-Allow-Methods',
@@ -39,7 +41,7 @@ export const handleAllRequest: HandleAllRequestFunction = async (
   } catch {
     response.writeHead(500, { 'content-Type': 'application/json' });
     response.end(
-      JSON.stringify({ status: 500, message: 'Server error occurred!' }),
+      JSON.stringify({ status: 500, message: RESPONSE_MESSAGES.error500 }),
     );
   }
 };

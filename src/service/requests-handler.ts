@@ -7,8 +7,9 @@ import {
   updateUserById,
 } from '../services/users';
 import { prepareResponseData } from '../utils/prepare-response-data';
-import { validate as validateUuid } from 'uuid';
 import { getDataFromRequest } from '../utils/get-data-from-request';
+import { RESPONSE_MESSAGES } from '../constants/response-messages';
+import { setResponseNotUuidFormat } from '../utils/set-response-not-uuid-format';
 
 export const getAllUsersRequestHandler = async (
   _: IncomingMessage,
@@ -21,7 +22,7 @@ export const getAllUsersRequestHandler = async (
     console.error(err);
     prepareResponseData(res, 500, {
       status: 500,
-      message: 'Oops! Server error.',
+      message: RESPONSE_MESSAGES.error500,
     });
   }
 };
@@ -31,13 +32,7 @@ export const getUserRequestHandler = async (
   res: ServerResponse,
   id: string,
 ) => {
-  if (!validateUuid(id)) {
-    prepareResponseData(res, 400, {
-      status: 400,
-      message: 'Invalid User ID format',
-    });
-    return;
-  }
+  if (!setResponseNotUuidFormat(res, id)) return;
 
   try {
     const userInfo = await getUserById(id);
@@ -45,7 +40,7 @@ export const getUserRequestHandler = async (
     if (!userInfo) {
       prepareResponseData(res, 404, {
         status: 404,
-        message: 'User not found!',
+        message: RESPONSE_MESSAGES.userNotFound,
       });
       return;
     }
@@ -55,7 +50,7 @@ export const getUserRequestHandler = async (
     console.error(err);
     prepareResponseData(res, 500, {
       status: 500,
-      message: 'Oops! Server error.',
+      message: RESPONSE_MESSAGES.error500,
     });
   }
 };
@@ -69,17 +64,17 @@ export const createUserRequestHandler = async (
     if (!age || !Array.isArray(hobbies) || !username) {
       prepareResponseData(res, 400, {
         status: 400,
-        message: 'Bad request! Field username, hobbies, age are required.',
+        message: RESPONSE_MESSAGES.fieldRequired,
       });
       return;
     }
     const newUser = await createUser({ age, hobbies, username });
-    prepareResponseData(res, 200, newUser);
+    prepareResponseData(res, 201, newUser);
   } catch (err) {
     console.error(err);
     prepareResponseData(res, 500, {
       status: 500,
-      message: 'Oops! Server error.',
+      message: RESPONSE_MESSAGES.error500,
     });
   }
 };
@@ -89,20 +84,14 @@ export const deleteUserRequestHandler = async (
   res: ServerResponse,
   id: string,
 ) => {
-  if (!validateUuid(id)) {
-    prepareResponseData(res, 400, {
-      status: 400,
-      message: 'Invalid User ID format',
-    });
-    return;
-  }
+  if (!setResponseNotUuidFormat(res, id)) return;
 
   try {
     const isUserDeleted = await deleteUserById(id);
     if (!isUserDeleted) {
       return prepareResponseData(res, 404, {
         status: 404,
-        message: 'User not found.',
+        message: RESPONSE_MESSAGES.userNotFound,
       });
     }
 
@@ -111,7 +100,7 @@ export const deleteUserRequestHandler = async (
     console.error(err);
     prepareResponseData(res, 500, {
       status: 500,
-      message: 'Oops! Server error.',
+      message: RESPONSE_MESSAGES.error500,
     });
   }
 };
@@ -121,13 +110,7 @@ export const updateUserRequestHandler = async (
   res: ServerResponse,
   id: string,
 ) => {
-  if (!validateUuid(id)) {
-    prepareResponseData(res, 400, {
-      status: 400,
-      message: 'Invalid User ID format',
-    });
-    return;
-  }
+  if (!setResponseNotUuidFormat(res, id)) return;
 
   try {
     const userData = await getDataFromRequest(req);
@@ -137,7 +120,7 @@ export const updateUserRequestHandler = async (
     if (!userInfo) {
       return prepareResponseData(res, 404, {
         status: 404,
-        message: 'User not found',
+        message: RESPONSE_MESSAGES.userNotFound,
       });
     }
 
@@ -146,7 +129,7 @@ export const updateUserRequestHandler = async (
     console.error(err);
     prepareResponseData(res, 500, {
       status: 500,
-      message: 'Oops! Server error.',
+      message: RESPONSE_MESSAGES.error500,
     });
   }
 };

@@ -30,5 +30,5 @@ export const updateUserById = async (userInfo: UserRequestType, id: string) => {
   }
 
   users.splice(userIndex, 1, { ...userInfo, id });
-  return userInfo;
+  return { ...userInfo, id };
 };
