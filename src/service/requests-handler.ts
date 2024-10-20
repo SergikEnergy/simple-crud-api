@@ -70,6 +70,7 @@ export const createUserRequestHandler = async (
         status: 400,
         message: 'Bad request! Field username, hobbies, age are required.',
       });
+      return;
     }
     const newUser = await createUser({ age, hobbies, username });
     prepareResponseData(res, 200, newUser);

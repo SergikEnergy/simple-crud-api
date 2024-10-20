@@ -20,7 +20,7 @@ export const deleteUserById = async (id: string) => {
 export const createUser = async (userInfo: UserRequestType) => {
   const user = { id: idGenerate(), ...userInfo };
   users.push(user);
-  return true;
+  return user;
 };
 
 export const updateUserById = async (userInfo: UserRequestType, id: string) => {
